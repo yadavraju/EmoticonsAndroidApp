@@ -99,14 +99,23 @@ public class MainActivityPresenter {
     }
 
     /*
-    * This method is used for putting tag and Asset array in map
-    * so that while searching content from key word i can directly
-    * loop to that map get that value as list of Assets
-    */
+     * This method is used for putting tag and Asset array in map
+     * so that while searching content from key word i can directly
+     * loop to that map get that value as list of Assets
+     */
     private void filterOutTagAndAssets(ArrayList<EmogiContentValue> emogiContentValues) {
+        ArrayList<Assets> values;
         for (EmogiContentValue tagAndAssets : emogiContentValues) {
             for (String tag : tagAndAssets.getTags()) {
-                tagWithAssetFilteredData.put(tag, tagAndAssets.getAssets());
+                if (tagWithAssetFilteredData.get(tag) == null) {
+                    tagWithAssetFilteredData.put(tag, tagAndAssets.getAssets());
+                } else {
+                    values = new ArrayList<>();
+                    values.addAll(tagWithAssetFilteredData.get(tag));
+                    values.addAll(tagAndAssets.getAssets());
+                    tagWithAssetFilteredData.put(tag, values);
+
+                }
             }
         }
 
@@ -117,9 +126,9 @@ public class MainActivityPresenter {
     }
 
     /*
-    * This method used filter Asset on the basis of tag searched
-    * Data is passed to Activity through interface to populate adapter
-    */
+     * This method used filter Asset on the basis of tag searched
+     * Data is passed to Activity through interface to populate adapter
+     */
     public void getFilteredData(String keyword) {
         ArrayList<Assets> finalAsset = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Assets>> entry : tagWithAssetFilteredData.entrySet()) {
@@ -139,9 +148,9 @@ public class MainActivityPresenter {
     }
 
     /*
-    * Disposed observable listener to prevent from
-    * being memory leaks
-    */
+     * Disposed observable listener to prevent from
+     * being memory leaks
+     */
     public void Destroy() {
         mainView = null;
         if (emogiDisposable != null) {
